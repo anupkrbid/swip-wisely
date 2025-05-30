@@ -144,6 +144,12 @@
           gradientBG 1s ease infinite;
       }
 
+      .credit-card.upi {
+        background: linear-gradient(-45deg, #20bf55, #01baef, #20bf55, #01baef);
+        animation: floatSupermoney 2s ease-in-out forwards,
+          gradientBG 1s ease infinite;
+      }
+
       .credit-card.error-card {
         background: linear-gradient(-45deg, #ff0000, #ff4444, #ff0000, #ff4444);
         animation: shakeCard 0.7s ease-in-out, gradientBG 3s ease infinite;
@@ -371,6 +377,49 @@
           font-size: 1.2rem;
         }
       }
+
+      .upi-container {
+        text-align: center;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        overflow: hidden;
+      }
+
+      .upi-icon {
+        font-size: 2.2rem;
+        margin-bottom: 8px;
+      }
+
+      .upi-title {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+        opacity: 0.9;
+      }
+
+      .upi-id {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 8px;
+        border-radius: 8px;
+        font-size: 1rem;
+        word-break: break-all;
+        max-width: 100%;
+      }
+
+      .upi-actions {
+        display: flex;
+        gap: 12px;
+        font-size: 1.3rem;
+      }
+
+      .credit-card.upi .card-logo {
+        font-size: 1.5rem;
+      }
+
+      .credit-card.upi .card-amount {
+        font-size: 1.2rem;
+      }
     </style>
   </head>
   <body>
@@ -412,48 +461,83 @@
         card.style.top = "50%";
 
         const emoji =
-          type === "supermoney" ? "💫" : type === "hdfc" ? "🌟" : "❌";
+          type === "supermoney"
+            ? "💫"
+            : type === "hdfc"
+            ? "🌟"
+            : type === "upi"
+            ? "📱"
+            : "❌";
+
         const cardNumber =
           type === "error-card"
             ? "#### #### #### ####"
+            : type === "upi"
+            ? "@" + Math.random().toString(36).substring(2, 8)
             : "•••• •••• •••• " + Math.floor(1000 + Math.random() * 9000);
 
         const emojis = ["😅", "🤔", "😬", "🙈"];
         const randomEmoji = emojis[Math.floor(Math.random() * emojis.length)];
 
-        card.innerHTML = `
+        if (type === "upi") {
+          card.innerHTML = `
           <div class="card-content">
-            <div>
-              <div class="card-chip"></div>
-              <div class="card-number">${cardNumber}</div>
-            </div>
-            <div class="card-footer">
+            <div class="upi-container">
               <div>
-                <div class="card-logo">
-                  ${
-                    type === "error-card"
-                      ? "Invalid amount " + emoji
-                      : type.toUpperCase() + " " + emoji
-                  }
-                </div>
-                ${
-                  type !== "error-card"
-                    ? `<div class="card-amount">₹${amount.toLocaleString()}</div>`
-                    : ""
-                }
+                <div class="upi-icon">📱</div>
+                <div class="upi-title">UPI Payment</div>
+                <div class="upi-id">${cardNumber}</div>
               </div>
-              <div class="card-emoji">
-                ${
-                  type === "error-card"
-                    ? randomEmoji
-                    : type === "supermoney"
-                    ? "💎"
-                    : "💳"
-                }
+              <div class="card-footer">
+                <div>
+                  <div class="card-logo">
+                    UPI ${emoji}
+                  </div>
+                  <div class="card-amount">₹${amount.toLocaleString()}</div>
+                </div>
+                <div class="upi-actions">
+                  <span>📲</span>
+                  <span>💸</span>
+                </div>
               </div>
             </div>
           </div>
         `;
+        } else {
+          card.innerHTML = `
+            <div class="card-content">
+              <div>
+                <div class="card-chip"></div>
+                <div class="card-number">${cardNumber}</div>
+              </div>
+              <div class="card-footer">
+                <div>
+                  <div class="card-logo">
+                    ${
+                      type === "error-card"
+                        ? "Invalid amount " + emoji
+                        : type.toUpperCase() + " " + emoji
+                    }
+                  </div>
+                  ${
+                    type !== "error-card"
+                      ? `<div class="card-amount">₹${amount.toLocaleString()}</div>`
+                      : ""
+                  }
+                </div>
+                <div class="card-emoji">
+                  ${
+                    type === "error-card"
+                      ? randomEmoji
+                      : type === "supermoney"
+                      ? "💎"
+                      : "💳"
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+        }
 
         card.addEventListener("animationend", () => {
           card.remove();
@@ -481,10 +565,10 @@
         }
 
         document.getElementById("overlay").classList.add("show");
+        const smCb = superMoneyCashback(number);
+        const hdfcCb = hdfcReturn(number);
         const cardType =
-          superMoneyCashback(number) > hdfcReturn(number)
-            ? "supermoney"
-            : "hdfc";
+          smCb > hdfcCb ? "supermoney" : hdfcCb === 0 ? "upi" : "hdfc";
         const card = createCard(cardType, number);
         document.body.appendChild(card);
 
