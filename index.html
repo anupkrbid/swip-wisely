@@ -145,7 +145,7 @@
       }
 
       .credit-card.upi {
-        background: linear-gradient(-45deg, #20bf55, #01baef, #20bf55, #01baef);
+        background: linear-gradient(145deg, #00d26a, #0072ff);
         animation: floatSupermoney 2s ease-in-out forwards,
           gradientBG 1s ease infinite;
       }
@@ -378,46 +378,47 @@
         }
       }
 
-      .upi-container {
-        text-align: center;
+      .upi-layout {
         height: 100%;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        overflow: hidden;
       }
 
-      .upi-icon {
-        font-size: 2.2rem;
-        margin-bottom: 8px;
+      .upi-info {
+        text-align: center;
       }
 
-      .upi-title {
-        font-size: 1.1rem;
-        margin-bottom: 12px;
-        opacity: 0.9;
+      .upi-amount {
+        font-size: 2rem;
+        font-weight: bold;
+        margin: 15px 0;
       }
 
-      .upi-id {
+      .upi-code {
+        display: inline-block;
         background: rgba(255, 255, 255, 0.2);
-        padding: 8px;
-        border-radius: 8px;
-        font-size: 1rem;
-        word-break: break-all;
-        max-width: 100%;
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
       }
 
-      .upi-actions {
+      .upi-bottom {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .upi-brand {
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .upi-icons {
         display: flex;
         gap: 12px;
-        font-size: 1.3rem;
-      }
-
-      .credit-card.upi .card-logo {
-        font-size: 1.5rem;
-      }
-
-      .credit-card.upi .card-amount {
         font-size: 1.2rem;
       }
     </style>
@@ -481,28 +482,23 @@
 
         if (type === "upi") {
           card.innerHTML = `
-          <div class="card-content">
-            <div class="upi-container">
-              <div>
-                <div class="upi-icon">📱</div>
-                <div class="upi-title">UPI Payment</div>
-                <div class="upi-id">${cardNumber}</div>
-              </div>
-              <div class="card-footer">
-                <div>
-                  <div class="card-logo">
-                    UPI ${emoji}
-                  </div>
-                  <div class="card-amount">₹${amount.toLocaleString()}</div>
+            <div class="card-content">
+              <div class="upi-layout">
+                <div class="upi-info">
+                  <div class="upi-brand">UPI Pay 📱</div>
+                  <div class="upi-amount">₹${amount.toLocaleString()}</div>
+                  <div class="upi-code">${cardNumber}</div>
                 </div>
-                <div class="upi-actions">
-                  <span>📲</span>
-                  <span>💸</span>
+                <div class="upi-bottom">
+                  <div class="upi-brand">BHIM ${emoji}</div>
+                  <div class="upi-icons">
+                    <span>📲</span>
+                    <span>💸</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        `;
+          `;
         } else {
           card.innerHTML = `
             <div class="card-content">
